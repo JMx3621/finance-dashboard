@@ -18,4 +18,4 @@ A personal finance dashboard PWA — accounts & net worth, per-category budgets 
 - Manual transaction entry and CSV import from bank exports
 - Month selector, light/dark theme, mobile-responsive layout
 
-The app starts with sample data so you can explore — use **Reset sample data** at the bottom to clear it and start fresh with your own numbers.
+The app starts with a set of accounts and recurring bills pre-loaded — use **Reset to starting data** at the bottom to clear anything you've added and return to that baseline.

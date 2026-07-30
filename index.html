@@ -236,7 +236,7 @@
   </div>
 
   <div class="section-title"><div class="spacer"></div>
-    <button class="link-btn" id="resetBtn" style="color:var(--muted)">Reset sample data</button>
+    <button class="link-btn" id="resetBtn" style="color:var(--muted)">Reset to starting data</button>
   </div>
 </div>
 
@@ -391,57 +391,26 @@ function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
 
 function seed(){
   const today = new Date();
-  const iso = (y,m,d)=> new Date(y,m,d).toISOString().slice(0,10);
+  // Card balances are July 2026 statement balances; $0 means the balance
+  // isn't published by email — set it by re-adding the account or logging a tx.
   const accounts = [
-    {id:uid(), name:'Everyday Checking', type:'checking', balance:4820.55},
-    {id:uid(), name:'High-Yield Savings', type:'savings', balance:18250.00},
-    {id:uid(), name:'Brokerage', type:'investment', balance:32410.80},
-    {id:uid(), name:'Wallet Cash', type:'cash', balance:180.00},
-    {id:uid(), name:'Credit Card', type:'credit', balance:0},
+    {id:uid(), name:'Truliant Checking', type:'checking', balance:0},
+    {id:uid(), name:'Chase Sapphire Preferred', type:'credit', balance:4587.21},
+    {id:uid(), name:'Citi Best Buy Visa', type:'credit', balance:1536.92},
+    {id:uid(), name:'Discover it', type:'credit', balance:19.50},
     {id:uid(), name:'PayPal', type:'credit', balance:0},
-    {id:uid(), name:'HELOC', type:'loan', balance:0},
+    {id:uid(), name:'Truliant HELOC', type:'loan', balance:0},
   ];
-  const chk = accounts[0].id, card = accounts[4].id;
-  const tx = [];
-  const mk = (daysAgo, desc, amt, cat, type, acct)=>{
-    const d = new Date(today); d.setDate(d.getDate()-daysAgo);
-    tx.push({id:uid(), date:d.toISOString().slice(0,10), desc, amount:amt, category:cat, type, account: acct||chk});
-  };
-  // income
-  mk(2,'Payroll — Acme Corp', 3400, 'Salary','income');
-  mk(17,'Payroll — Acme Corp', 3400, 'Salary','income');
-  mk(9,'Freelance design', 650, 'Freelance','income');
-  mk(20,'Savings interest', 42.18, 'Interest','income', accounts[1].id);
-  // expenses
-  mk(1,'Whole Foods', 128.44,'Groceries','expense',card);
-  mk(1,'Shell gas', 52.10,'Transport','expense',card);
-  mk(3,'Rent', 1650,'Housing','expense');
-  mk(4,'Netflix', 15.99,'Subscriptions','expense',card);
-  mk(4,'Spotify', 11.99,'Subscriptions','expense',card);
-  mk(5,'Dinner — Nomad', 74.20,'Dining','expense',card);
-  mk(6,'Electric bill', 96.30,'Utilities','expense');
-  mk(7,'Trader Joe\'s', 61.75,'Groceries','expense',card);
-  mk(8,'Uber', 23.40,'Transport','expense',card);
-  mk(10,'Amazon', 89.99,'Shopping','expense',card);
-  mk(11,'Pharmacy', 34.50,'Health','expense',card);
-  mk(12,'Movie night', 32.00,'Entertainment','expense',card);
-  mk(14,'Costco', 210.66,'Groceries','expense',card);
-  mk(16,'Internet', 70.00,'Utilities','expense');
-  mk(19,'Coffee shop', 18.75,'Dining','expense',card);
-  mk(22,'Gym membership', 45.00,'Health','expense',card);
-  mk(24,'Flights — spring trip', 340.00,'Travel','expense',card);
-  const budgets = { Housing:1700, Groceries:600, Dining:200, Transport:150, Utilities:200, Shopping:150, Health:120, Entertainment:80, Subscriptions:40, Travel:300 };
+  const chk = accounts[0].id;
+  const budgets = { Housing:1700, Groceries:600, Dining:200, Transport:150, Utilities:250, Shopping:150, Health:120, Entertainment:80, Subscriptions:40, Travel:300 };
   const thisMonth = today.toISOString().slice(0,7);
-  // lastPosted = current month so seeds don't double-post over the sample transactions
+  // lastPosted = current month: these bills were already billed this month,
+  // so auto-posting starts next month.
   const recurring = [
-    {id:uid(), desc:'Payroll — Acme Corp', amount:3400, type:'income', category:'Salary', account:chk, day:1, lastPosted:thisMonth},
-    {id:uid(), desc:'Rent', amount:1650, type:'expense', category:'Housing', account:chk, day:26, lastPosted:thisMonth},
-    {id:uid(), desc:'Netflix', amount:15.99, type:'expense', category:'Subscriptions', account:card, day:25, lastPosted:thisMonth},
-    {id:uid(), desc:'Spotify', amount:11.99, type:'expense', category:'Subscriptions', account:card, day:25, lastPosted:thisMonth},
-    {id:uid(), desc:'Gym membership', amount:45, type:'expense', category:'Health', account:card, day:7, lastPosted:thisMonth},
-    {id:uid(), desc:'Internet', amount:70, type:'expense', category:'Utilities', account:chk, day:13, lastPosted:thisMonth},
+    {id:uid(), desc:'AT&T Internet', amount:90.00, type:'expense', category:'Utilities', account:chk, day:22, lastPosted:thisMonth},
+    {id:uid(), desc:'Duke Energy', amount:134.73, type:'expense', category:'Utilities', account:chk, day:29, lastPosted:thisMonth},
   ];
-  return { accounts, tx, budgets, monthBudgets:{}, recurring, month: thisMonth, theme: 'light' };
+  return { accounts, tx: [], budgets, monthBudgets:{}, recurring, month: thisMonth, theme: 'light' };
 }
 
 /* ---------- Helpers ---------- */
@@ -970,7 +939,7 @@ document.getElementById('saveRecur').addEventListener('click', ()=>{
 
 // Reset
 document.getElementById('resetBtn').addEventListener('click', ()=>{
-  if(confirm('Reset to sample data? This clears anything you\'ve added.')){
+  if(confirm('Reset to starting data? This clears anything you\'ve added.')){
     localStorage.removeItem(STORE_KEY); state=seed(); render();
   }
 });
