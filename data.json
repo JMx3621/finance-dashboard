@@ -1,18 +1,25 @@
 {
-  "version": 1,
+  "version": 2,
   "asOf": "2026-07-30",
   "balances": {
+    "Truliant Checking": 390.00,
     "Chase Sapphire Preferred": 4469.21,
     "Citi Best Buy Visa": 1536.92,
-    "Discover it": 19.50
+    "Discover it": 19.50,
+    "PayPal": 5309.66,
+    "Truliant HELOC": 197997.10
   },
   "addAccounts": [
-    { "name": "Raisin Savings", "type": "savings", "balance": 0 }
+    { "name": "Raisin Savings", "type": "savings", "balance": 0 },
+    { "name": "Membership Savings", "type": "savings", "balance": 33.57 },
+    { "name": "Rainy Day Account", "type": "savings", "balance": 27.76 },
+    { "name": "BofA Checking", "type": "checking", "balance": 104.22 }
   ],
   "recurring": [
     { "desc": "AT&T Internet", "amount": 90.00, "type": "expense", "category": "Utilities", "day": 22 },
     { "desc": "Duke Energy", "amount": 134.73, "type": "expense", "category": "Utilities", "day": 25 },
     { "desc": "Piedmont Natural Gas", "amount": 23.12, "type": "expense", "category": "Utilities", "day": 20 },
-    { "desc": "Go Store It Storage", "amount": 172.00, "type": "expense", "category": "Housing", "day": 1 }
+    { "desc": "Go Store It Storage", "amount": 172.00, "type": "expense", "category": "Housing", "day": 1 },
+    { "desc": "HELOC Payment", "amount": 1979.97, "type": "expense", "category": "Housing", "day": 17 }
   ]
 }
