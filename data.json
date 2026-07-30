@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "asOf": "2026-07-30",
   "balances": {
     "Truliant Checking": 390.00,
@@ -25,6 +25,12 @@
     { "desc": "Duke Energy", "amount": 134.73, "type": "expense", "category": "Utilities", "day": 25, "account": "Truliant Checking" },
     { "desc": "Piedmont Natural Gas", "amount": 23.12, "type": "expense", "category": "Utilities", "day": 20, "account": "Truliant Checking" },
     { "desc": "HELOC Payment", "amount": 1979.97, "type": "expense", "category": "Housing", "day": 17, "account": "Truliant Checking" }
+  ],
+  "events": [
+    { "day": 13, "desc": "PayPal Credit payment due (min $182)" },
+    { "day": 22, "desc": "Citi Best Buy payment due (min ~$52)" },
+    { "day": 26, "desc": "Discover payment due" },
+    { "day": 27, "desc": "Chase Sapphire payment due (autopay on)" }
   ],
   "tx": [
     { "id": "2026-07-02-pay", "date": "2026-07-02", "desc": "Paycheck", "amount": 2580.80, "type": "income", "category": "Salary", "account": "Bluevine Business" },

@@ -149,6 +149,18 @@
   .budget-mini input:focus { outline:none; border-color:var(--accent); }
   .budget-mini .nm { flex:1; font-weight:600; }
 
+  /* Calendar */
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+  .cal-dow { text-align:center; font-size:11px; color:var(--muted); font-weight:600; padding:2px 0; }
+  .cal-cell { min-height:58px; border:1px solid var(--border); border-radius:8px; padding:4px 5px; background:var(--surface-2); overflow:hidden; }
+  .cal-cell.empty { background:none; border:none; }
+  .cal-cell.today { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }
+  .cal-day { font-size:12px; font-weight:600; display:flex; align-items:center; gap:2px; flex-wrap:wrap; }
+  .cal-tag { font-size:10px; line-height:1; }
+  .cal-tag.due { color:var(--neg); font-weight:800; }
+  .cal-amt { font-size:10px; font-weight:600; margin-top:2px; white-space:nowrap; }
+  .cal-amt.pos { color:var(--pos); } .cal-amt.neg { color:var(--neg); }
+
   /* Modal */
   .modal-bg { position:fixed; inset:0; background:rgba(6,10,20,.55); backdrop-filter: blur(3px); display:none; place-items:center; z-index:50; padding:16px; }
   .modal-bg.open { display:grid; }
@@ -216,6 +228,13 @@
     <button class="link-btn" id="editBudgetsBtn">Edit budgets</button>
   </div>
   <div class="card" id="budgetsCard"></div>
+
+  <!-- Calendar -->
+  <div class="section-title">
+    <h2>Calendar</h2><div class="spacer"></div>
+    <span class="hint" id="calHint"></span>
+  </div>
+  <div class="card" id="calendarCard"></div>
 
   <!-- Recurring -->
   <div class="section-title">
@@ -383,6 +402,7 @@ function load(){
       if (!s.budgets) s.budgets = {};
       if (!s.monthBudgets) s.monthBudgets = {};
       if (!s.recurring) s.recurring = [];
+      if (!s.events) s.events = [];
       if (s.syncVersion === undefined) s.syncVersion = 0;
       return s; }
   } catch(e){}
@@ -411,7 +431,7 @@ function seed(){
     {id:uid(), desc:'AT&T Internet', amount:90.00, type:'expense', category:'Utilities', account:chk, day:22, lastPosted:thisMonth},
     {id:uid(), desc:'Duke Energy', amount:134.73, type:'expense', category:'Utilities', account:chk, day:29, lastPosted:thisMonth},
   ];
-  return { accounts, tx: [], budgets, monthBudgets:{}, recurring, month: thisMonth, theme: 'light', syncVersion: 0 };
+  return { accounts, tx: [], budgets, monthBudgets:{}, recurring, events: [], month: thisMonth, theme: 'light', syncVersion: 0 };
 }
 
 /* Pull balance/bill updates published to data.json alongside the app.
@@ -457,6 +477,7 @@ async function syncFromServer(){
     else state.tx.push({id:t.id, date:t.date, desc:t.desc, amount:t.amount,
       category:t.category, type:t.type, account: acctId});
   });
+  if (Array.isArray(j.events)) state.events = j.events;
   state.syncVersion = j.version;
   save();
   return true;
@@ -534,6 +555,7 @@ function render(){
   renderCategory();
   renderIE();
   renderBudgets();
+  renderCalendar();
   renderRecurring();
   renderTx();
   save();
@@ -754,6 +776,54 @@ function renderBudgets(){
     (overCount ? ` · <span class="neg">${overCount} over</span>` : '');
 }
 
+/* Month grid: paydays, scheduled bills, card due dates, and actual
+   money in/out per day for the selected month */
+function renderCalendar(){
+  const el = document.getElementById('calendarCard');
+  const [y,m] = state.month.split('-').map(Number);
+  const daysInMonth = new Date(y, m, 0).getDate();
+  const startDow = new Date(y, m-1, 1).getDay();
+  const now = new Date();
+  const isThisMonth = now.getFullYear()===y && now.getMonth()===m-1;
+  document.getElementById('calHint').textContent = monthLabel(state.month);
+  const spend = {}, inc = {};
+  txForMonth(state.month).forEach(t=>{
+    const d = parseInt(t.date.slice(8,10),10);
+    if (t.type==='expense') spend[d]=(spend[d]||0)+t.amount;
+    else inc[d]=(inc[d]||0)+t.amount;
+  });
+  const bills = {}, pays = {};
+  state.recurring.forEach(r=>{
+    const map = r.type==='income' ? pays : bills;
+    (map[r.day]=map[r.day]||[]).push(r.desc);
+  });
+  const dues = {};
+  (state.events||[]).forEach(e=>{ (dues[e.day]=dues[e.day]||[]).push(e.desc); });
+  let cells = ['S','M','T','W','T','F','S'].map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  for(let i=0;i<startDow;i++) cells += `<div class="cal-cell empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const marks = [];
+    if (pays[d]) marks.push(`<span class="cal-tag">💰</span>`);
+    if (bills[d]) marks.push(`<span class="cal-tag">↻</span>`);
+    if (dues[d]) marks.push(`<span class="cal-tag due">!</span>`);
+    const amounts = [];
+    if (inc[d]) amounts.push(`<div class="cal-amt pos">+${fmt0(inc[d])}</div>`);
+    if (spend[d]) amounts.push(`<div class="cal-amt neg">−${fmt0(spend[d])}</div>`);
+    const tips = [...(pays[d]||[]), ...(bills[d]||[]), ...(dues[d]||[])].join(', ');
+    cells += `<div class="cal-cell${isThisMonth&&now.getDate()===d?' today':''}" title="${esc(tips)}">
+      <div class="cal-day">${d}${marks.join('')}</div>${amounts.join('')}</div>`;
+  }
+  el.innerHTML = `<div class="cal-grid">${cells}</div>
+    <div class="legend" style="margin-top:12px">
+      <div class="item">💰 Payday</div>
+      <div class="item">↻ Bill scheduled</div>
+      <div class="item"><b style="color:var(--neg)">!</b> Card payment due</div>
+      <div class="item"><span class="dot" style="background:var(--pos)"></span>Money in</div>
+      <div class="item"><span class="dot" style="background:var(--neg)"></span>Money out</div>
+    </div>
+    <div class="hint" style="margin-top:8px">Long-press a day to see what's due on it.</div>`;
+}
+
 function renderRecurring(){
   const el = document.getElementById('recurCard');
   const acctName = id=>{ const a=state.accounts.find(x=>x.id===id); return a?a.name:'—'; };
@@ -785,7 +855,7 @@ function renderTx(){
   t.innerHTML = `<thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Account</th><th class="amt">Amount</th><th></th></tr></thead>
   <tbody>${rows.map(r=>`
     <tr>
-      <td style="white-space:nowrap;color:var(--muted)">${new Date(r.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+      <td style="white-space:nowrap;color:var(--muted)">${new Date(r.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
       <td>${r.rec?'<span title="Posted automatically from a recurring rule" style="color:var(--muted)">↻</span> ':''}${esc(r.desc)}</td>
       <td><span class="tx-cat"><span class="dot" style="background:${CAT_COLOR[r.category]||'var(--c8)'}"></span>${esc(r.category)}</span></td>
       <td style="color:var(--muted)">${esc(acctName(r.account))}</td>
