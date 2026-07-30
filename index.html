@@ -436,22 +436,26 @@ async function syncFromServer(){
       state.accounts.push({id:uid(), name:n.name, type:n.type, balance:n.balance||0});
   });
   const defaultAcct = (state.accounts.find(a=>a.type==='checking') || state.accounts[0] || {}).id;
+  const acctIdByName = n => { const a = state.accounts.find(x=>x.name===n); return a ? a.id : null; };
   (j.recurring || []).forEach(r=>{
     const ex = state.recurring.find(x=>x.desc===r.desc);
-    if (ex){ ex.amount = r.amount; ex.day = r.day; ex.category = r.category; ex.type = r.type; }
+    const acctId = acctIdByName(r.account) || defaultAcct;
+    if (ex){ ex.amount = r.amount; ex.day = r.day; ex.category = r.category; ex.type = r.type;
+      if (r.account && acctIdByName(r.account)) ex.account = acctId; }
     // synced bills are already reflected in the pushed balances, so new
     // rules start posting next month
     else state.recurring.push({id:uid(), desc:r.desc, amount:r.amount, type:r.type,
-      category:r.category, account:defaultAcct, day:r.day, lastPosted:thisMonth});
+      category:r.category, account:acctId, day:r.day, lastPosted:thisMonth});
   });
   // one-time historical transactions; balances in the same push already
   // reflect them, so they post without adjusting balances
   (j.tx || []).forEach(t=>{
-    if (t.id && !state.tx.some(x=>x.id===t.id)){
-      const acct = state.accounts.find(a=>a.name===t.account);
-      state.tx.push({id:t.id, date:t.date, desc:t.desc, amount:t.amount,
-        category:t.category, type:t.type, account: acct ? acct.id : defaultAcct});
-    }
+    if (!t.id) return;
+    const acctId = acctIdByName(t.account) || defaultAcct;
+    const ex = state.tx.find(x=>x.id===t.id);
+    if (ex) ex.account = acctId;
+    else state.tx.push({id:t.id, date:t.date, desc:t.desc, amount:t.amount,
+      category:t.category, type:t.type, account: acctId});
   });
   state.syncVersion = j.version;
   save();
