@@ -1,6 +1,6 @@
 // Cache-first app shell so the dashboard works offline once installed.
 // Bump the version whenever any shell file changes.
-const CACHE = 'finance-dash-v5';
+const CACHE = 'finance-dash-v6';
 const SHELL = [
   '.',
   'index.html',

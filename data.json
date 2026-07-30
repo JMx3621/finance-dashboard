@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "asOf": "2026-07-30",
   "balances": {
     "Truliant Checking": 390.00,
@@ -25,5 +25,14 @@
     { "desc": "Duke Energy", "amount": 134.73, "type": "expense", "category": "Utilities", "day": 25 },
     { "desc": "Piedmont Natural Gas", "amount": 23.12, "type": "expense", "category": "Utilities", "day": 20 },
     { "desc": "HELOC Payment", "amount": 1979.97, "type": "expense", "category": "Housing", "day": 17 }
+  ],
+  "tx": [
+    { "id": "2026-07-02-pay", "date": "2026-07-02", "desc": "Paycheck", "amount": 2580.80, "type": "income", "category": "Salary", "account": "Truliant Checking" },
+    { "id": "2026-07-16-pay", "date": "2026-07-16", "desc": "Paycheck", "amount": 2580.80, "type": "income", "category": "Salary", "account": "Truliant Checking" },
+    { "id": "2026-07-30-pay", "date": "2026-07-30", "desc": "Paycheck", "amount": 2580.80, "type": "income", "category": "Salary", "account": "Truliant Checking" },
+    { "id": "2026-07-17-heloc", "date": "2026-07-17", "desc": "HELOC Payment", "amount": 1979.97, "type": "expense", "category": "Housing", "account": "Truliant Checking" },
+    { "id": "2026-07-20-piedmont", "date": "2026-07-20", "desc": "Piedmont Natural Gas", "amount": 23.12, "type": "expense", "category": "Utilities", "account": "Truliant Checking" },
+    { "id": "2026-07-22-att", "date": "2026-07-22", "desc": "AT&T Internet", "amount": 90.00, "type": "expense", "category": "Utilities", "account": "Truliant Checking" },
+    { "id": "2026-07-25-duke", "date": "2026-07-25", "desc": "Duke Energy", "amount": 134.73, "type": "expense", "category": "Utilities", "account": "Truliant Checking" }
   ]
 }

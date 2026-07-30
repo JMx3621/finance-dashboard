@@ -444,6 +444,15 @@ async function syncFromServer(){
     else state.recurring.push({id:uid(), desc:r.desc, amount:r.amount, type:r.type,
       category:r.category, account:defaultAcct, day:r.day, lastPosted:thisMonth});
   });
+  // one-time historical transactions; balances in the same push already
+  // reflect them, so they post without adjusting balances
+  (j.tx || []).forEach(t=>{
+    if (t.id && !state.tx.some(x=>x.id===t.id)){
+      const acct = state.accounts.find(a=>a.name===t.account);
+      state.tx.push({id:t.id, date:t.date, desc:t.desc, amount:t.amount,
+        category:t.category, type:t.type, account: acct ? acct.id : defaultAcct});
+    }
+  });
   state.syncVersion = j.version;
   save();
   return true;
