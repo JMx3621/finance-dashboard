@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "asOf": "2026-07-30",
   "balances": {
     "Truliant Checking": 390.00,
@@ -14,7 +14,8 @@
     { "name": "Raisin Savings", "type": "savings", "balance": 0 },
     { "name": "Membership Savings", "type": "savings", "balance": 33.57 },
     { "name": "Rainy Day Account", "type": "savings", "balance": 27.76 },
-    { "name": "BofA Checking", "type": "checking", "balance": 104.22 }
+    { "name": "BofA Checking", "type": "checking", "balance": 104.22 },
+    { "name": "Bluevine Business", "type": "checking", "balance": 0 }
   ],
   "recurring": [
     { "desc": "Paycheck (mid-month)", "amount": 2580.80, "type": "income", "category": "Salary", "day": 13 },
