@@ -397,8 +397,9 @@ function seed(){
     {id:uid(), name:'High-Yield Savings', type:'savings', balance:18250.00},
     {id:uid(), name:'Brokerage', type:'investment', balance:32410.80},
     {id:uid(), name:'Wallet Cash', type:'cash', balance:180.00},
-    {id:uid(), name:'Rewards Credit Card', type:'credit', balance:1245.30},
-    {id:uid(), name:'Car Loan', type:'loan', balance:8600.00},
+    {id:uid(), name:'Credit Card', type:'credit', balance:0},
+    {id:uid(), name:'PayPal', type:'credit', balance:0},
+    {id:uid(), name:'HELOC', type:'loan', balance:0},
   ];
   const chk = accounts[0].id, card = accounts[4].id;
   const tx = [];
