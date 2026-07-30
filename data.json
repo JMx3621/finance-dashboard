@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "asOf": "2026-07-30",
   "balances": {
     "Truliant Checking": 390.00,
@@ -17,8 +17,8 @@
     { "name": "BofA Checking", "type": "checking", "balance": 104.22 }
   ],
   "recurring": [
-    { "desc": "Paycheck (1st)", "amount": 2580.80, "type": "income", "category": "Salary", "day": 1 },
-    { "desc": "Paycheck (15th)", "amount": 2580.80, "type": "income", "category": "Salary", "day": 15 },
+    { "desc": "Paycheck (mid-month)", "amount": 2580.80, "type": "income", "category": "Salary", "day": 13 },
+    { "desc": "Paycheck (late-month)", "amount": 2580.80, "type": "income", "category": "Salary", "day": 27 },
     { "desc": "AT&T Internet", "amount": 90.00, "type": "expense", "category": "Utilities", "day": 22 },
     { "desc": "Duke Energy", "amount": 134.73, "type": "expense", "category": "Utilities", "day": 25 },
     { "desc": "Piedmont Natural Gas", "amount": 23.12, "type": "expense", "category": "Utilities", "day": 20 },
