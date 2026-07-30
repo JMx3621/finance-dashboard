@@ -1067,6 +1067,16 @@ postDueRecurring();
 render();
 syncFromServer().then(changed=>{ if (changed){ postDueRecurring(); render(); } });
 
+// Multiple open copies (installed app + browser tabs) share storage but not
+// memory: reload from storage whenever this copy regains focus or another
+// copy writes, so a stale copy never clobbers a fresher one.
+document.addEventListener('visibilitychange', ()=>{
+  if (!document.hidden){ state = load(); postDueRecurring(); render(); }
+});
+window.addEventListener('storage', e=>{
+  if (e.key === STORE_KEY){ state = load(); render(); }
+});
+
 // PWA: register the service worker when served over http(s) — file:// can't install
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   navigator.serviceWorker.register('sw.js').catch(()=>{});
