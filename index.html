@@ -383,6 +383,7 @@ function load(){
       if (!s.budgets) s.budgets = {};
       if (!s.monthBudgets) s.monthBudgets = {};
       if (!s.recurring) s.recurring = [];
+      if (s.syncVersion === undefined) s.syncVersion = 0;
       return s; }
   } catch(e){}
   return seed();
@@ -410,7 +411,42 @@ function seed(){
     {id:uid(), desc:'AT&T Internet', amount:90.00, type:'expense', category:'Utilities', account:chk, day:22, lastPosted:thisMonth},
     {id:uid(), desc:'Duke Energy', amount:134.73, type:'expense', category:'Utilities', account:chk, day:29, lastPosted:thisMonth},
   ];
-  return { accounts, tx: [], budgets, monthBudgets:{}, recurring, month: thisMonth, theme: 'light' };
+  return { accounts, tx: [], budgets, monthBudgets:{}, recurring, month: thisMonth, theme: 'light', syncVersion: 0 };
+}
+
+/* Pull balance/bill updates published to data.json alongside the app.
+   Only applies versions newer than the last one seen; never touches
+   transactions the user entered themselves. */
+async function syncFromServer(){
+  if (!location.protocol.startsWith('http')) return false;
+  let j;
+  try {
+    const res = await fetch('data.json', {cache:'no-store'});
+    if (!res.ok) return false;
+    j = await res.json();
+  } catch(e){ return false; }
+  if (!j || typeof j.version !== 'number' || j.version <= (state.syncVersion||0)) return false;
+  const thisMonth = new Date().toISOString().slice(0,7);
+  Object.entries(j.balances || {}).forEach(([name, bal])=>{
+    const a = state.accounts.find(x=>x.name===name);
+    if (a && typeof bal === 'number') a.balance = bal;
+  });
+  (j.addAccounts || []).forEach(n=>{
+    if (!state.accounts.some(a=>a.name===n.name) && ACCT_META[n.type])
+      state.accounts.push({id:uid(), name:n.name, type:n.type, balance:n.balance||0});
+  });
+  const defaultAcct = (state.accounts.find(a=>a.type==='checking') || state.accounts[0] || {}).id;
+  (j.recurring || []).forEach(r=>{
+    const ex = state.recurring.find(x=>x.desc===r.desc);
+    if (ex){ ex.amount = r.amount; ex.day = r.day; ex.category = r.category; ex.type = r.type; }
+    // synced bills are already reflected in the pushed balances, so new
+    // rules start posting next month
+    else state.recurring.push({id:uid(), desc:r.desc, amount:r.amount, type:r.type,
+      category:r.category, account:defaultAcct, day:r.day, lastPosted:thisMonth});
+  });
+  state.syncVersion = j.version;
+  save();
+  return true;
 }
 
 /* ---------- Helpers ---------- */
@@ -946,6 +982,7 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
 
 postDueRecurring();
 render();
+syncFromServer().then(changed=>{ if (changed){ postDueRecurring(); render(); } });
 
 // PWA: register the service worker when served over http(s) — file:// can't install
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

@@ -1,6 +1,6 @@
 // Cache-first app shell so the dashboard works offline once installed.
 // Bump the version whenever any shell file changes.
-const CACHE = 'finance-dash-v4';
+const CACHE = 'finance-dash-v5';
 const SHELL = [
   '.',
   'index.html',
@@ -23,6 +23,17 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  // data.json carries balance/bill updates — always try the network first
+  if (e.request.url.endsWith('data.json')) {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, copy));
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
   e.respondWith(
     caches.match(e.request).then(hit =>
       hit ||

@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "asOf": "2026-07-30",
+  "balances": {
+    "Chase Sapphire Preferred": 4469.21,
+    "Citi Best Buy Visa": 1536.92,
+    "Discover it": 19.50
+  },
+  "addAccounts": [
+    { "name": "Raisin Savings", "type": "savings", "balance": 0 }
+  ],
+  "recurring": [
+    { "desc": "AT&T Internet", "amount": 90.00, "type": "expense", "category": "Utilities", "day": 22 },
+    { "desc": "Duke Energy", "amount": 134.73, "type": "expense", "category": "Utilities", "day": 25 },
+    { "desc": "Piedmont Natural Gas", "amount": 23.12, "type": "expense", "category": "Utilities", "day": 20 },
+    { "desc": "Go Store It Storage", "amount": 172.00, "type": "expense", "category": "Housing", "day": 1 }
+  ]
+}
