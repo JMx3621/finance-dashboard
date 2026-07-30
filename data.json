@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "asOf": "2026-07-30",
   "balances": {
     "Truliant Checking": 390.00,
@@ -8,14 +8,15 @@
     "Discover it": 19.50,
     "PayPal": 5309.66,
     "Truliant HELOC": 205847.10,
-    "Property Taxes Due": 0
+    "Property Taxes Due": 0,
+    "Bluevine Business": 3200.00
   },
   "addAccounts": [
     { "name": "Raisin Savings", "type": "savings", "balance": 0 },
     { "name": "Membership Savings", "type": "savings", "balance": 33.57 },
     { "name": "Rainy Day Account", "type": "savings", "balance": 27.76 },
     { "name": "BofA Checking", "type": "checking", "balance": 104.22 },
-    { "name": "Bluevine Business", "type": "checking", "balance": 0 }
+    { "name": "Bluevine Business", "type": "checking", "balance": 3200.00 }
   ],
   "recurring": [
     { "desc": "Paycheck (mid-month)", "amount": 2580.80, "type": "income", "category": "Salary", "day": 13 },
