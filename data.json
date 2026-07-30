@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "asOf": "2026-07-30",
   "balances": {
     "Truliant Checking": 390.00,
@@ -7,14 +7,14 @@
     "Citi Best Buy Visa": 1536.92,
     "Discover it": 19.50,
     "PayPal": 5309.66,
-    "Truliant HELOC": 197997.10
+    "Truliant HELOC": 205847.10,
+    "Property Taxes Due": 0
   },
   "addAccounts": [
     { "name": "Raisin Savings", "type": "savings", "balance": 0 },
     { "name": "Membership Savings", "type": "savings", "balance": 33.57 },
     { "name": "Rainy Day Account", "type": "savings", "balance": 27.76 },
-    { "name": "BofA Checking", "type": "checking", "balance": 104.22 },
-    { "name": "Property Taxes Due", "type": "loan", "balance": 7000.00 }
+    { "name": "BofA Checking", "type": "checking", "balance": 104.22 }
   ],
   "recurring": [
     { "desc": "Paycheck (1st)", "amount": 2580.80, "type": "income", "category": "Salary", "day": 1 },
