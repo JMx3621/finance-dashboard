@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "asOf": "2026-07-30",
   "balances": {
     "Truliant Checking": 390.00,
@@ -13,7 +13,8 @@
     { "name": "Raisin Savings", "type": "savings", "balance": 0 },
     { "name": "Membership Savings", "type": "savings", "balance": 33.57 },
     { "name": "Rainy Day Account", "type": "savings", "balance": 27.76 },
-    { "name": "BofA Checking", "type": "checking", "balance": 104.22 }
+    { "name": "BofA Checking", "type": "checking", "balance": 104.22 },
+    { "name": "Property Taxes Due", "type": "loan", "balance": 7000.00 }
   ],
   "recurring": [
     { "desc": "Paycheck (1st)", "amount": 2580.80, "type": "income", "category": "Salary", "day": 1 },
@@ -21,7 +22,6 @@
     { "desc": "AT&T Internet", "amount": 90.00, "type": "expense", "category": "Utilities", "day": 22 },
     { "desc": "Duke Energy", "amount": 134.73, "type": "expense", "category": "Utilities", "day": 25 },
     { "desc": "Piedmont Natural Gas", "amount": 23.12, "type": "expense", "category": "Utilities", "day": 20 },
-    { "desc": "Go Store It Storage", "amount": 172.00, "type": "expense", "category": "Housing", "day": 1 },
     { "desc": "HELOC Payment", "amount": 1979.97, "type": "expense", "category": "Housing", "day": 17 }
   ]
 }
